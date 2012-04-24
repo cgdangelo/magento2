@@ -195,10 +195,15 @@ class Varien_Object implements ArrayAccess
             }
             $this->_data = $key;
         } else {
-            if (!array_key_exists($key, $this->_data) || $this->_data[$key] !== $value) {
+            if (method_exists($this, $key)) {
+                $this->$key($value);
                 $this->_hasDataChanges = true;
+            } else {
+                if (!array_key_exists($key, $this->_data) || $this->_data[$key] !== $value) {
+                    $this->_hasDataChanges = true;
+                }
+                $this->_data[$key] = $value;
             }
-            $this->_data[$key] = $value;
         }
         return $this;
     }
